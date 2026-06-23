@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>阜外医院 · 小程序完整还原</title>
+<style>
+  :root {
+    --red: #C41230; --red-dark: #A00E28;
+    --ink: #1a1a1a; --sub: #888; --faint: #b3b3b3;
+    --line: #ececec; --card: #f7f7f8; --bg: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: #e9e9ec; color: var(--ink); -webkit-font-smoothing: antialiased;
+         height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  img { display: block; } svg { display: block; }
+
+  .phone { position: relative; flex: none; width: 393px; height: 852px;
+    border: 5px solid #0b0b0c; border-radius: 52px; background: var(--bg); overflow: hidden;
+    box-shadow: 0 18px 52px rgba(0,0,0,.24),0 0 0 .5px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.10);
+    transform: scale(var(--scale,1)); transform-origin: center center; }
+  .phone .island { position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 32px; background: #0a0a0a; border-radius: 20px; z-index: 50; }
+  .phone .screen { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  .phone .screen::-webkit-scrollbar { display: none; }
+  .statusbar { height: 50px; background: var(--bg); flex: none; }
+
+  .app { width: 100%; background: var(--bg); min-height: calc(100% - 50px); }
+
+  .page { display: none; padding-bottom: 60px; }
+  .page.active { display: block; }
+  .page-bg { background: #f0f0f2; }
+
+  .topbar { position: relative; display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 12px; }
+  .topbar .loc { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--ink); line-height: 1; }
+  .topbar .brand { position: absolute; left: 50%; transform: translateX(-50%); font-size: 15px; font-weight: 900;
+    letter-spacing: 2px; color: var(--ink); white-space: nowrap; }
+  .topbar .brand small { font-weight: 600; font-size: 9px; color: var(--faint); letter-spacing: 1px; margin-left: 4px; }
+  .topbar .acts { display: flex; gap: 14px; color: var(--ink); }
+  .topbar .back { display: flex; align-items: center; gap: 4px; font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; padding: 4px 0; }
+  .topbar .title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+
+  .sec-ttl { padding: 24px 14px 10px; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
+
+  .tabbar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; background: var(--bg); border-top: 1px solid rgba(0,0,0,.06); padding-bottom: 7px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 0 7px; font-size: 10px; color: var(--faint); cursor: pointer; }
+  .tab.on { color: var(--red); }
+
+  .filter-row1 { display: flex; gap: 0; padding: 12px 14px 0; }
+  .filter-row1 span { flex: 1; text-align: center; padding: 9px 0; font-size: 12px; font-weight: 600;
+    color: var(--ink); background: var(--card); cursor: pointer; }
+  .filter-row1 span:first-child { background: var(--red); color: #fff; }
+  .filter-row2 { display: flex; gap: 8px; padding: 8px 14px 0; flex-wrap: wrap; }
+  .filter-row2 span { padding: 6px 12px; font-size: 11px; color: var(--sub); background: var(--card); cursor: pointer; border-radius: 2px; }
+  .filter-row2 span:first-child { color: var(--red); font-weight: 600; }
+
+  .brand-hero { margin: 14px 12px 0; position: relative; height: 180px; overflow: hidden; border-radius: 4px; }
+  .brand-hero .bg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, #E8304A 100%); }
+  .brand-hero .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; color: #fff; }
+  .brand-hero .overlay .logo-badge { font-size: 10px; letter-spacing: 4px; opacity: .85; margin-bottom: 8px; }
+  .brand-hero .overlay b { font-size: 22px; font-weight: 900; letter-spacing: 3px; }
+  .brand-hero .overlay p { font-size: 12px; margin-top: 8px; opacity: .9; letter-spacing: 1px; }
+
+  .fn3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0 2px; padding: 0 12px; margin-top: 14px; }
+  .fn3 .fc { background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 16px 6px 12px; cursor: pointer; border-radius: 4px; }
+  .fn3 .fc .ic { color: var(--red); }
+  .fn3 .fc h4 { font-size: 12px; font-weight: 700; letter-spacing: .5px; margin-top: 10px; }
+  .fn3 .fc p { font-size: 10px; color: var(--sub); margin-top: 3px; }
+
+  .cta { margin: 16px 12px 0; padding: 16px; background: var(--red); color: #fff; cursor: pointer; display: flex;
+    align-items: center; justify-content: space-between; border-radius: 4px; }
+  .cta .tx b { font-size: 16px; font-weight: 700; letter-spacing: 1px; display: block; }
+  .cta .tx span { font-size: 11px; opacity: .85; margin-top: 2px; display: block; }
+  .cta .ar { font-size: 11px; opacity: .85; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+
+  .live { margin: 0 12px; background: var(--card); padding: 16px; border-radius: 4px; }
+  .live .lr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .live .lr em { font-style: normal; color: var(--red); font-size: 13px; font-weight: 700; padding: 2px 8px; background: #FFF0F2; border-radius: 2px; }
+  .live .lr span { font-size: 11px; color: var(--red); font-weight: 600; cursor: pointer; }
+  .live .li { font-size: 12.5px; font-weight: 700; line-height: 1.4; }
+  .live .ls { font-size: 11px; color: var(--sub); line-height: 1.45; margin-top: 3px; }
+
+  .docs { display: flex; gap: 10px; padding: 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .docs::-webkit-scrollbar { display: none; }
+  .doc { flex: none; width: 118px; background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 14px 8px 12px; border-radius: 4px; cursor: pointer; }
+  .doc .av { width: 48px; height: 48px; flex: none; border-radius: 50%; overflow: hidden; background: #e0e0e5; }
+  .doc .av .dinit { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: var(--red); background: #FFE5E9; }
+  .doc b { font-size: 12.5px; font-weight: 700; margin-top: 8px; letter-spacing: .5px; }
+  .doc span { font-size: 10px; color: var(--sub); margin-top: 2px; }
+  .doc em { font-style: normal; font-size: 10px; color: var(--red); margin-top: 4px; }
+
+  .svc4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px 0; padding: 14px 6px 8px; }
+  .svc4 .s { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; }
+  .svc4 .s .ic { color: var(--ink); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--card); border-radius: 8px; }
+  .svc4 .s span { font-size: 11px; color: var(--sub); }
+
+  .apt-banner { margin: 12px 12px; background: linear-gradient(135deg, var(--red), #E8304A); border-radius: 8px; padding: 20px 16px; color: #fff; }
+  .apt-banner b { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+  .apt-banner p { font-size: 11px; opacity: .85; margin-top: 4px; }
+
+  .apt-search { margin: 0 12px 12px; background: var(--card); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .apt-search span { font-size: 13px; color: var(--sub); flex: 1; }
+
+  .dept-list { padding: 0 12px; }
+  .dept-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+  .dept-grid .dg-i { background: var(--card); text-align: center; padding: 14px 6px; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; }
+  .dept-grid .dg-i .emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  .ot-hero { margin: 12px 12px; background: var(--card); border-radius: 8px; padding: 20px; display: flex; gap: 16px; align-items: center; }
+  .ot-hero .ot-icon { width: 56px; height: 56px; flex: none; border-radius: 50%; background: linear-gradient(135deg, var(--red), #E8304A); display: flex; align-items: center; justify-content: center; }
+  .ot-hero .ot-info b { font-size: 15px; font-weight: 700; }
+  .ot-hero .ot-info p { font-size: 11px; color: var(--sub); margin-top: 4px; line-height: 1.4; }
+  .ot-hero .ot-info .ot-btn { display: inline-block; margin-top: 8px; padding: 6px 16px; background: var(--red); color: #fff; font-size: 11px; font-weight: 600; border-radius: 16px; cursor: pointer; }
+
+  .ot-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; padding: 0 12px; margin-top: 4px; }
+  .ot-cards .otc { background: var(--card); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; }
+  .ot-cards .otc .otc-ic { width: 40px; height: 40px; margin: 0 auto 8px; border-radius: 50%; background: #FFE5E9; display: flex; align-items: center; justify-content: center; color: var(--red); }
+  .ot-cards .otc b { font-size: 13px; font-weight: 700; display: block; }
+  .ot-cards .otc span { font-size: 10px; color: var(--sub); display: block; margin-top: 2px; }
+
+  .fu-card { margin: 12px 12px; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.04); overflow: hidden; }
+  .fu-card .fu-hd { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .fu-card .fu-hd b { font-size: 14px; font-weight: 700; }
+  .fu-card .fu-hd span { font-size: 11px; color: var(--red); cursor: pointer; }
+  .fu-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--line); align-items: flex-start; cursor: pointer; }
+  .fu-item:last-child { border-bottom: none; }
+  .fu-item .fu-badge { flex: none; width: 44px; height: 44px; border-radius: 50%; background: #FFE5E9; display: flex; align-items: center; justify-content: center; color: var(--red); font-size: 10px; font-weight: 700; }
+  .fu-item .fu-detail { flex: 1; min-width: 0; }
+  .fu-item .fu-detail b { font-size: 13px; font-weight: 600; display: block; }
+  .fu-item .fu-detail p { font-size: 11px; color: var(--sub); margin-top: 3px; }
+  .fu-item .fu-detail .fu-time { font-size: 10px; color: var(--faint); margin-top: 4px; }
+  .fu-item .fu-status { flex: none; font-size: 11px; padding: 3px 8px; border-radius: 10px; align-self: center; }
+  .fu-status.ongoing { background: #FFF0F2; color: var(--red); }
+  .fu-status.done { background: #EFF7EE; color: #4CAF50; }
+
+  .my-header { margin: 0 12px; background: linear-gradient(135deg, var(--red), #E8304A); border-radius: 10px; padding: 20px 16px; color: #fff; display: flex; gap: 14px; align-items: center; }
+  .my-header .my-av { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; flex: none; }
+  .my-header .my-info { flex: 1; }
+  .my-header .my-info b { font-size: 17px; font-weight: 700; }
+  .my-header .my-info span { font-size: 11px; opacity: .8; display: block; margin-top: 2px; }
+  .my-header .my-ar { flex: none; opacity: .7; }
+
+  .my-stats { display: grid; grid-template-columns: repeat(4,1fr); margin: -10px 12px 0; position: relative; z-index: 1; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.06); padding: 14px 0; }
+  .my-stats .ms { text-align: center; cursor: pointer; }
+  .my-stats .ms em { font-style: normal; font-size: 20px; font-weight: 800; color: var(--ink); display: block; }
+  .my-stats .ms span { font-size: 10px; color: var(--sub); margin-top: 3px; display: block; }
+
+  .my-list { margin: 16px 12px; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.04); overflow: hidden; }
+  .my-list .ml { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); gap: 10px; cursor: pointer; }
+  .my-list .ml:last-child { border-bottom: none; }
+  .my-list .ml .ml-ic { flex: none; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--red); background: #FFE5E9; }
+  .my-list .ml .ml-tx { flex: 1; font-size: 14px; font-weight: 500; }
+  .my-list .ml .ml-ar { flex: none; color: var(--faint); }
+  .my-list .ml .ml-tag { flex: none; font-size: 10px; background: var(--red); color: #fff; padding: 2px 6px; border-radius: 8px; }
+
+  .pt-mask { position: absolute; inset: 0; z-index: 90; background: transparent; display: none; }
+  .pt-mask.show { display: block; }
+  .pt-panel { position: absolute; top: 92px; left: 50%; transform: translateX(-50%); z-index: 91; background: var(--bg);
+    min-width: 180px; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,.18); padding: 8px 0;
+    opacity: 0; transition: opacity .18s; pointer-events: none; }
+  .pt-panel.show { opacity: 1; pointer-events: auto; }
+  .pt-panel .ptm { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; }
+  .pt-panel .ptm.on { background: var(--card); }
+  .pt-panel .ptm b { font-size: 13px; flex: 1; font-weight: 600; }
+  .pt-panel .ptm span { font-size: 10px; color: var(--sub); }
+  .pt-panel .ptm .ck { color: var(--red); display: none; flex: none; }
+  .pt-panel .ptm.on .ck { display: block; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="i-pin"><path d="M12 21s7-6.4 7-11a7 7 0 1 0-14 0c0 4.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></g>
+  <g id="i-bell"><path d="M6 16V10a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/></g>
+  <g id="i-chev"><path d="m9 6 6 6-6 6"/></g>
+  <g id="i-chev-left"><path d="m15 6-6 6 6 6"/></g>
+  <g id="i-home"><path d="M4 11 12 4l8 7M6 10v9h12v-9"/></g>
+  <g id="i-cross"><rect x="4" y="4" width="16" height="16"/><path d="M12 8v8M8 12h8"/></g>
+  <g id="i-leaf"><path d="M20 4C9 4 4 9.5 4 20c10.5 0 16-5 16-16Z"/><path d="M4 20 14.5 9.5"/></g>
+  <g id="i-user"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></g>
+  <g id="i-cal"><rect x="3.5" y="4.5" width="17" height="16"/><path d="M3.5 9h17M8 3v3M16 3v3M12 13v4M10 15h4"/></g>
+  <g id="i-chat"><path d="M4 5h16v11H9l-4 3v-3H4z"/></g>
+  <g id="i-heart"><path d="M12 20S4 14.5 4 9a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 5.5-8 11-8 11z"/></g>
+  <g id="i-search"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></g>
+  <g id="i-flask"><path d="M9.5 3v6L5 17.5A1.5 1.5 0 0 0 6.3 20h11.4a1.5 1.5 0 0 0 1.3-2.5L14.5 9V3"/><path d="M8.5 3h7M8 14.5h8"/></g>
+  <g id="i-pill"><path d="M13.5 3.6 20.4 10.5a4.9 4.9 0 1 1-6.9 6.9L6.6 10.5a4.9 4.9 0 1 1 6.9-6.9Z"/><path d="M7 7 17 17"/></g>
+  <g id="i-doc"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="m10.3 11.5 1.7 1.7 1.7-1.7M12 13.2V17M10.3 14.6h3.4"/></g>
+  <g id="i-wallet"><path d="M3 7a2 2 0 0 1 2-2h12v3h2a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="16.5" cy="13" r="1.3"/></g>
+  <g id="i-shield"><path d="M12 3 5 5.8V11c0 4.5 3 7.8 7 9 4-1.2 7-4.5 7-9V5.8z"/><path d="m9 12 2 2 4-4"/></g>
+  <g id="i-clip"><rect x="5" y="5" width="14" height="16"/><rect x="9" y="3" width="6" height="3.4"/><path d="M9 11h6M9 15h4"/></g>
+  <g id="i-report"><path d="M6 3.5h8l4 4v13H6z"/><path d="M14 3.5v4h4M9 13h6M9 16h4"/></g>
+  <g id="i-ticket"><path d="M4 9a2 2 0 0 0 0 6v4h16v-4a2 2 0 0 1 0-6V5H4z"/><path d="M13 5v14"/></g>
+  <g id="i-yuan"><circle cx="12" cy="12" r="8.5"/><path d="M8.5 8 12 12l3.5-4M12 12v5M9.5 13h5M9.5 15h5"/></g>
+  <g id="i-pulse"><path d="M3 12h4l2.5-6 4 13 2.5-7H21"/></g>
+  <g id="i-scan"><rect x="4" y="4" width="16" height="16"/><path d="M4 12h16"/></g>
+  <g id="i-msg"><path d="M5 18 3.5 21l.3-4A8 7 0 1 1 12 19a9 9 0 0 1-3-.5Z"/></g>
+  <g id="i-video"><path d="M4 6h11v8H4z"/><path d="m15 8 5-4v10l-5-4z"/></g>
+  <g id="i-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0 1 22 16.92z"/></g>
+  <g id="i-setting"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></g>
+  <g id="i-map"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></g>
+</defs></svg>
+
+<div class="phone">
+  <div class="island"></div>
+  <div class="screen" id="screen">
+    <div class="statusbar"></div>
+
+    <!-- ══ PAGE: 首页 ══ -->
+    <div class="page active" id="page-home">
+      <div class="app">
+        <div class="topbar">
+          <div class="loc">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg>
+            北京
+            <span style="width:1px;height:12px;background:var(--line);flex:none"></span>
+            <span class="pt" style="display:flex;align-items:center;gap:2px;font-size:13px;font-weight:600;cursor:pointer;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+              <span class="pt-nm">张建国</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg>
+            </span>
+          </div>
+          <div class="brand">阜外医院<small>FUWAI</small></div>
+          <div class="acts">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><use href="#i-search"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><use href="#i-bell"/></svg>
+          </div>
+        </div>
+
+        <div class="filter-row1">
+          <span>全部</span><span>心内科</span><span>心外科</span><span>综合科</span>
+        </div>
+        <div class="filter-row2">
+          <span>预约挂号</span><span>AI导诊</span><span>在线问诊</span><span>处方查询</span><span>报告查询</span>
+        </div>
+
+        <div class="brand-hero">
+          <div class="bg"></div>
+          <div class="overlay">
+            <span class="logo-badge">国家心血管病中心</span>
+            <b>中国医学科学院<br>阜外医院</b>
+            <p>心血管疾病国家级诊疗中心 · 世界最大心脏中心之一</p>
+          </div>
+        </div>
+
+        <div class="fn3">
+          <div class="fc" onclick="switchPage('apt')">
+            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
+            <h4>预约挂号</h4><p>专家·普通门诊</p>
+          </div>
+          <div class="fc">
+            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+            <h4>AI导诊</h4><p>智能分诊·精准推荐</p>
+          </div>
+          <div class="fc" onclick="switchPage('ot')">
+            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
+            <h4>线上诊疗</h4><p>视频·图文问诊</p>
+          </div>
+        </div>
+
+        <div class="cta" onclick="switchPage('apt')">
+          <div class="tx"><b>预约挂号</b><span>提前7天放号 · 每日15:00更新</span></div>
+          <span class="ar">立即预约 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span>
+        </div>
+
+        <div class="sec-ttl">进行中</div>
+        <div class="live">
+          <div class="lr"><em>候诊</em><span>取号 ›</span></div>
+          <div class="li">今日 09:30　心内科 · 胡盛寿院士团队</div>
+          <div class="ls">已签到 · 请前往门诊楼 2 层 A 区候诊，您前面还有 5 位</div>
+        </div>
+
+        <div class="sec-ttl">推荐医生</div>
+        <div class="docs">
+          <div class="doc"><div class="av"><div class="dinit">胡</div></div><b>胡盛寿</b><span>院士·主任医师</span><em>可约</em></div>
+          <div class="doc"><div class="av"><div class="dinit">郑</div></div><b>郑哲</b><span>主任医师</span><em>可约</em></div>
+          <div class="doc"><div class="av"><div class="dinit">潘</div></div><b>潘湘斌</b><span>主任医师</span><em>可约</em></div>
+          <div class="doc"><div class="av"><div class="dinit">王</div></div><b>王水云</b><span>副主任医师</span><em>可约</em></div>
+          <div class="doc"><div class="av"><div class="dinit">李</div></div><b>李守军</b><span>主任医师</span><em>可约</em></div>
+          <div class="doc"><div class="av"><div class="dinit">杨</div></div><b>杨跃进</b><span>主任医师</span><em>可约</em></div>
+        </div>
+
+        <div class="sec-ttl">全部服务</div>
+        <div class="svc4">
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ticket"/></svg></span><span>候诊取号</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-yuan"/></svg></span><span>门诊缴费</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-doc"/></svg></span><span>电子病历</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-report"/></svg></span><span>检验报告</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-clip"/></svg></span><span>就诊记录</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pill"/></svg></span><span>我的处方</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-flask"/></svg></span><span>检查预约</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-scan"/></svg></span><span>影像查询</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pulse"/></svg></span><span>健康监测</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg></span><span>我的保险</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-wallet"/></svg></span><span>账单明细</span></div>
+          <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-msg"/></svg></span><span>咨询记录</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: 就诊(预约挂号) ══ -->
+    <div class="page page-bg" id="page-apt">
+      <div class="app">
+        <div class="topbar">
+          <div class="back" onclick="switchTab(0)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev-left"/></svg>
+          </div>
+          <div class="title">预约挂号</div>
+          <div style="width:30px"></div>
+        </div>
+        <div class="apt-banner"><b>预约挂号</b><p>提前7天放号 · 每日 15:00 更新号源</p></div>
+        <div class="apt-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+          <span>搜索科室或医生</span>
+        </div>
+        <div class="sec-ttl" style="padding-top:0">推荐科室</div>
+        <div class="dept-list"><div class="dept-grid">
+          <div class="dg-i"><span class="emoji">❤️</span>心内科</div>
+          <div class="dg-i"><span class="emoji">🫀</span>心外科</div>
+          <div class="dg-i"><span class="emoji">🫁</span>呼吸内科</div>
+          <div class="dg-i"><span class="emoji">🧠</span>神经内科</div>
+          <div class="dg-i"><span class="emoji">🩸</span>血管外科</div>
+          <div class="dg-i"><span class="emoji">⚡</span>心律失常科</div>
+          <div class="dg-i"><span class="emoji">🩺</span>高血压科</div>
+          <div class="dg-i"><span class="emoji">🔬</span>检验科</div>
+          <div class="dg-i"><span class="emoji">🩻</span>影像科</div>
+        </div></div>
+        <div class="sec-ttl">热门专家</div>
+        <div style="padding:0 12px;display:flex;flex-direction:column;gap:8px">
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">胡</div>
+            <div class="fu-detail"><b>胡盛寿 院士</b><p>心外科 · 冠心病、瓣膜病</p><span class="fu-time">¥800 · 今日有号</span></div>
+            <span class="fu-status ongoing">可约</span>
+          </div>
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">郑</div>
+            <div class="fu-detail"><b>郑哲 主任医师</b><p>心外科 · 成人心脏外科</p><span class="fu-time">¥500 · 本周可约</span></div>
+            <span class="fu-status ongoing">可约</span>
+          </div>
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">潘</div>
+            <div class="fu-detail"><b>潘湘斌 主任医师</b><p>心内科 · 结构性心脏病</p><span class="fu-time">¥500 · 下周可约</span></div>
+            <span class="fu-status ongoing">可约</span>
+          </div>
+        </div>
+        <div class="sec-ttl">挂号须知</div>
+        <div style="margin:0 12px;background:#fff;border-radius:8px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.04);font-size:12px;color:var(--sub);line-height:1.7">
+          <p>1. 预约挂号实行实名制，请携带有效身份证件就诊。</p>
+          <p>2. 每日15:00开放第7日号源。</p>
+          <p>3. 取消预约请在就诊日前一天16:00前操作。</p>
+          <p>4. 就诊当日请提前30分钟到达医院取号。</p>
+          <p>5. 专家门诊挂号费根据职称和知名度有所不同。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: 就诊(线上诊疗) ══ -->
+    <div class="page page-bg" id="page-ot">
+      <div class="app">
+        <div class="topbar">
+          <div class="back" onclick="switchTab(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev-left"/></svg>
+          </div>
+          <div class="title">线上诊疗</div>
+          <div style="width:30px"></div>
+        </div>
+        <div class="ot-hero">
+          <div class="ot-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></div>
+          <div class="ot-info"><b>足不出户 · 在线问诊</b><p>阜外专家在线为您提供专业心血管疾病诊疗建议</p><span class="ot-btn">立即问诊</span></div>
+        </div>
+        <div class="ot-cards">
+          <div class="otc"><span class="otc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span><b>视频问诊</b><span>面对面专家咨询</span></div>
+          <div class="otc"><span class="otc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-msg"/></svg></span><b>图文问诊</b><span>上传病历·文字咨询</span></div>
+          <div class="otc"><span class="otc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-phone"/></svg></span><b>电话咨询</b><span>快速连线专家</span></div>
+          <div class="otc"><span class="otc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pill"/></svg></span><b>用药咨询</b><span>药品用法·剂量指导</span></div>
+        </div>
+        <div class="sec-ttl">线上出诊专家</div>
+        <div style="padding:0 12px;display:flex;flex-direction:column;gap:8px">
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">王</div>
+            <div class="fu-detail"><b>王水云 副主任医师</b><p>心内科 · 高血压、冠心病</p><span class="fu-time">¥300/次 · 在线</span></div>
+            <span class="fu-status ongoing">在线</span>
+          </div>
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">李</div>
+            <div class="fu-detail"><b>李守军 主任医师</b><p>心外科 · 小儿心脏外科</p><span class="fu-time">¥500/次 · 15:00 可约</span></div>
+            <span class="fu-status ongoing">可约</span>
+          </div>
+          <div class="fu-item" style="background:#fff;border-radius:8px;border:none;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+            <div class="fu-badge" style="background:#FFE5E9;color:var(--red);font-size:14px">杨</div>
+            <div class="fu-detail"><b>杨跃进 主任医师</b><p>心内科 · 冠心病介入治疗</p><span class="fu-time">¥500/次 · 明日可约</span></div>
+            <span class="fu-status ongoing">可约</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: 康复(随访咨询) ══ -->
+    <div class="page page-bg" id="page-fu">
+      <div class="app">
+        <div class="topbar">
+          <div class="loc"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pin"/></svg>北京</div>
+          <div class="brand">随访咨询</div>
+          <div class="acts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer"><use href="#i-msg"/></svg></div>
+        </div>
+        <div class="fu-card" style="margin-top:8px">
+          <div class="fu-hd"><b>我的随访计划</b><span>查看全部 ›</span></div>
+          <div class="fu-item">
+            <div class="fu-badge">术后</div>
+            <div class="fu-detail"><b>冠状动脉搭桥术后随访</b><p>术后3个月复查</p><span class="fu-time">计划时间：2026-07-15</span></div>
+            <span class="fu-status ongoing">进行中</span>
+          </div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#E8F5E9;color:#4CAF50">术后</div>
+            <div class="fu-detail"><b>心脏瓣膜置换术后随访</b><p>术后6个月复查</p><span class="fu-time">已完成：2026-06-10</span></div>
+            <span class="fu-status done">已完成</span>
+          </div>
+        </div>
+        <div class="fu-card">
+          <div class="fu-hd"><b>随访记录</b><span>全部记录 ›</span></div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#E8F5E9;color:#4CAF50">记</div>
+            <div class="fu-detail"><b>2026-06-10 术后随访</b><p>血压正常，心电图无异常。建议继续服药，3个月后复查。</p><span class="fu-time">随访医生：郑哲</span></div>
+            <span class="fu-status done">已读</span>
+          </div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#E8F5E9;color:#4CAF50">记</div>
+            <div class="fu-detail"><b>2026-03-05 术后随访</b><p>恢复良好，伤口愈合正常，可逐步增加日常活动量。</p><span class="fu-time">随访医生：潘湘斌</span></div>
+            <span class="fu-status done">已读</span>
+          </div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#E8F5E9;color:#4CAF50">记</div>
+            <div class="fu-detail"><b>2025-12-20 出院随访</b><p>首次出院随访，评估恢复情况，制定康复计划。</p><span class="fu-time">随访医生：胡盛寿</span></div>
+            <span class="fu-status done">已读</span>
+          </div>
+        </div>
+        <div class="fu-card">
+          <div class="fu-hd"><b>在线咨询</b><span>发起咨询 ›</span></div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#FFF3E0;color:#FF9800">药</div>
+            <div class="fu-detail"><b>用药咨询</b><p>关于华法林用量的调整建议</p><span class="fu-time">2026-06-18 · 王水云医生</span></div>
+            <span class="fu-status done">已回复</span>
+          </div>
+          <div class="fu-item">
+            <div class="fu-badge" style="background:#FFF3E0;color:#FF9800">症</div>
+            <div class="fu-detail"><b>症状咨询</b><p>术后偶尔胸闷，是否需要来院复查？</p><span class="fu-time">2026-06-01 · 李守军医生</span></div>
+            <span class="fu-status done">已回复</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: 我的(个人中心) ══ -->
+    <div class="page page-bg" id="page-my">
+      <div class="app">
+        <div class="topbar">
+          <div class="back" onclick="switchTab(0)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev-left"/></svg>
+          </div>
+          <div class="title">个人中心</div>
+          <div style="width:30px"></div>
+        </div>
+        <div class="my-header" style="margin-top:8px">
+          <div class="my-av"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"/></svg></div>
+          <div class="my-info"><b>张建国</b><span>就诊卡号：3101****8892</span></div>
+          <div class="my-ar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="my-stats">
+          <div class="ms"><em>3</em><span>预约记录</span></div>
+          <div class="ms"><em>12</em><span>就诊记录</span></div>
+          <div class="ms"><em>5</em><span>检验报告</span></div>
+          <div class="ms"><em>2</em><span>我的处方</span></div>
+        </div>
+        <div class="my-list">
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"/></svg></span><span class="ml-tx">就诊人管理</span><span class="ml-tag">3人</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span><span class="ml-tx">我的预约</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-clip"/></svg></span><span class="ml-tx">就诊记录</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+        </div>
+        <div class="my-list">
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-report"/></svg></span><span class="ml-tx">检验报告</span><span class="ml-tag">5份</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pill"/></svg></span><span class="ml-tx">我的处方</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-yuan"/></svg></span><span class="ml-tx">门诊缴费</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg></span><span class="ml-tx">我的保险</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+        </div>
+        <div class="my-list">
+          <div class="ml"><span class="ml-ic" style="background:#fff3e0;color:#ff9800"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-map"/></svg></span><span class="ml-tx">医院导航</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic" style="background:#f3e5f5;color:#9c27b0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-bell"/></svg></span><span class="ml-tx">消息通知</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+          <div class="ml"><span class="ml-ic" style="background:#e3f2fd;color:#2196f3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-setting"/></svg></span><span class="ml-tx">设置</span><span class="ml-ar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span></div>
+        </div>
+        <div style="text-align:center;padding:20px;font-size:11px;color:var(--faint)">中国医学科学院阜外医院 · v3.2.1</div>
+      </div>
+    </div>
+
+    <!-- ══ 就诊人切换面板 ══ -->
+    <div class="pt-mask" id="pt-mask"></div>
+    <div class="pt-panel" id="pt-panel"></div>
+
+    <!-- ══ 底部 Tab ══ -->
+    <div class="tabbar">
+      <div class="tab on" data-tab="0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-home"/></svg>首页</div>
+      <div class="tab" data-tab="1"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cross"/></svg>就诊</div>
+      <div class="tab" data-tab="2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-leaf"/></svg>康复</div>
+      <div class="tab" data-tab="3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-user"/></svg>我的</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){var W=393,H=852,PAD=36,MAX=1.6,MIN=.3;function fit(){var s=Math.min((window.innerWidth-PAD)/W,(window.innerHeight-PAD)/H);s=Math.max(MIN,Math.min(MAX,s));document.documentElement.style.setProperty('--scale',s);}fit();window.addEventListener('resize',fit);})();
+
+var currentTab=0;
+var tabPages=['home','apt','fu','my'];
+
+function switchTab(idx){
+  currentTab=idx;
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('on',i===idx);});
+  showPage(tabPages[idx]);
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  document.getElementById('screen').scrollTop=0;
+}
+window.switchPage=function(id){
+  var map={apt:1,ot:1,fu:2,my:3,home:0};
+  var tabIdx=map[id]!==undefined?map[id]:0;
+  currentTab=tabIdx;
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('on',i===tabIdx);});
+  showPage(tabPages[tabIdx]);
+};
+
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){switchTab(parseInt(this.getAttribute('data-tab')));});
+});
+
+document.querySelector('.filter-row1').addEventListener('click',function(e){
+  var t=e.target.closest('span');if(!t)return;
+  this.querySelectorAll('span').forEach(function(s){s.style.background='';s.style.color='';if(s===t){s.style.background='var(--red)';s.style.color='#fff';}});
+});
+document.querySelector('.filter-row2').addEventListener('click',function(e){
+  var t=e.target.closest('span');if(!t)return;
+  this.querySelectorAll('span').forEach(function(s){s.style.color='';s.style.fontWeight='';if(s===t){s.style.color='var(--red)';s.style.fontWeight='600';}});
+});
+
+(function(){
+  var store={patients:[{name:'张建国',role:'本人'},{name:'张小明',role:'儿子'},{name:'王秀兰',role:'母亲'}],idx:0};
+  var mask=document.getElementById('pt-mask'),pan=document.getElementById('pt-panel');
+  if(!pan)return;
+  function build(){
+    pan.innerHTML='';
+    store.patients.forEach(function(p,i){
+      var d=document.createElement('div');d.className='ptm'+(i===store.idx?' on':'');
+      d.setAttribute('data-pp',i);
+      d.innerHTML='<b>'+p.name+'</b><span>'+p.role+'</span><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span>';
+      pan.appendChild(d);
+    });
+  }
+  function apply(){var p=store.patients[store.idx];document.querySelectorAll('.pt-nm').forEach(function(e){e.textContent=p.name;});}
+  function open(){build();mask.classList.add('show');pan.classList.add('show');}
+  function close(){mask.classList.remove('show');pan.classList.remove('show');}
+  document.querySelectorAll('.pt').forEach(function(t){t.addEventListener('click',function(e){e.stopPropagation();pan.classList.contains('show')?close():open();});});
+  pan.addEventListener('click',function(e){var m=e.target.closest('.ptm');if(!m)return;store.idx=parseInt(m.getAttribute('data-pp'),10);apply();close();});
+  mask.addEventListener('click',close);
+  apply();
+})();
+</script>
+</body>
+</html>
