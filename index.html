@@ -67,14 +67,16 @@
   .hc-name { font-size: 15px; font-weight: 700; }
   .hc-qr { font-size: 12px; color: var(--accent); font-weight: 600; cursor: pointer; }
   .hc-bot { display: flex; }
-  .hc-bot .hc-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 12px; border-right: 1px solid var(--line); cursor: pointer; }
+  .hc-bot .hc-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px 10px; border-right: 1px solid var(--line); cursor: pointer; }
   .hc-bot .hc-left b { font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+  .hc-bot .hc-left span { font-size: 11px; color: var(--sub); margin-top: 4px; }
   .hc-bot .hc-left:hover { background: #fafafa; }
   .hc-bot .hc-right { flex: 1; display: flex; flex-direction: column; }
-  .hc-rt, .hc-rb { flex: 1; display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+  .hc-rt, .hc-rb { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 14px; cursor: pointer; }
   .hc-rt:hover, .hc-rb:hover { background: #fafafa; }
   .hc-rt { border-bottom: 1px solid var(--line); }
-  .hc-rt b, .hc-rb b { font-size: 13px; font-weight: 600; }
+  .hc-rt b, .hc-rb b { font-size: 12px; font-weight: 600; }
+  .hc-rt span, .hc-rb span { font-size: 10px; color: var(--sub); display: block; }
   .hc-lic, .hc-ric { color: var(--accent); display: flex; flex: none; }
 
   .cta { margin: 16px 12px 0; padding: 16px; background: var(--accent); color: #fff; cursor: pointer; display: flex;
@@ -250,16 +252,16 @@
           <div class="hc-bot">
             <div class="hc-left" onclick="switchPage('apt')">
               <span class="hc-lic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
-              <b>预约挂号</b>
+              <b>预约挂号</b><span>专家·普通门诊</span>
             </div>
             <div class="hc-right">
               <div class="hc-rt">
                 <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
-                <b>智能分诊</b>
+                <b>智能分诊</b><span>精准推荐</span>
               </div>
               <div class="hc-rb" onclick="switchPage('ot')">
                 <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
-                <b>在线问诊</b>
+                <b>在线问诊</b><span>图文·视频</span>
               </div>
             </div>
           </div>
@@ -292,7 +294,7 @@
           <div class="title">预约挂号</div>
           <div style="width:30px"></div>
         </div>
-        <div class="apt-banner"><b>预约挂号</b><p>提前7天放号 · 每日 15:00 更新号源</p></div>
+        <div class="apt-banner"><b>预约挂号</b><span>专家·普通门诊</span><p>提前7天放号 · 每日 15:00 更新号源</p></div>
         <div class="apt-search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
           <span>搜索科室或医生</span>
