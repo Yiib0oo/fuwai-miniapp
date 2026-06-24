@@ -48,13 +48,6 @@
   .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 0 7px; font-size: 10px; color: var(--faint); cursor: pointer; }
   .tab.on { color: var(--red); }
 
-  .filter-row1 { display: flex; gap: 0; padding: 12px 14px 0; }
-  .filter-row1 span { flex: 1; text-align: center; padding: 9px 0; font-size: 12px; font-weight: 600;
-    color: var(--ink); background: var(--card); cursor: pointer; }
-  .filter-row1 span:first-child { background: var(--red); color: #fff; }
-  .filter-row2 { display: flex; gap: 8px; padding: 8px 14px 0; flex-wrap: wrap; }
-  .filter-row2 span { padding: 6px 12px; font-size: 11px; color: var(--sub); background: var(--card); cursor: pointer; border-radius: 2px; }
-  .filter-row2 span:first-child { color: var(--red); font-weight: 600; }
 
   .brand-hero { margin: 14px 12px 0; position: relative; height: 180px; overflow: hidden; border-radius: 4px; }
   .brand-hero .bg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--red-dark) 0%, var(--red) 60%, #E8304A 100%); }
@@ -227,12 +220,6 @@
           </div>
         </div>
 
-        <div class="filter-row1">
-          <span>全部</span><span>心内科</span><span>心外科</span><span>综合科</span>
-        </div>
-        <div class="filter-row2">
-          <span>预约挂号</span><span>AI导诊</span><span>在线问诊</span><span>处方查询</span><span>报告查询</span>
-        </div>
 
         <div class="fn3">
           <div class="fc" onclick="switchPage('apt')">
@@ -525,16 +512,6 @@ document.querySelectorAll('.tab').forEach(function(t){
   t.addEventListener('click',function(){switchTab(parseInt(this.getAttribute('data-tab')));});
 });
 
-document.querySelector('.filter-row1').addEventListener('click',function(e){
-  var t=e.target.closest('span');if(!t)return;
-  this.querySelectorAll('span').forEach(function(s){s.style.background='';s.style.color='';if(s===t){s.style.background='var(--red)';s.style.color='#fff';}});
-});
-document.querySelector('.filter-row2').addEventListener('click',function(e){
-  var t=e.target.closest('span');if(!t)return;
-  this.querySelectorAll('span').forEach(function(s){s.style.color='';s.style.fontWeight='';if(s===t){s.style.color='var(--red)';s.style.fontWeight='600';}});
-});
-
-(function(){
   var store={patients:[{name:'张建国',role:'本人'},{name:'张小明',role:'儿子'},{name:'王秀兰',role:'母亲'}],idx:0};
   var mask=document.getElementById('pt-mask'),pan=document.getElementById('pt-panel');
   if(!pan)return;
