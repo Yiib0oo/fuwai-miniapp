@@ -76,17 +76,21 @@
   .hc-dots .dot.active { background: #fff; }
 
   .hc-func { display: flex; border-top: 1px solid var(--line); }
-  .hf-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; cursor: pointer; }
-  .hf-item + .hf-item { border-left: 1px solid var(--line); }
-  .hf-item:hover { background: #fafafa; }
-  .hf-ic { color: var(--accent); display: flex; }
-  .hf-item b { font-size: 12px; font-weight: 600; }
+  .hc-func .hc-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 10px; border-right: 1px solid var(--line); cursor: pointer; }
+  .hc-func .hc-left:hover { background: #fafafa; }
+  .hc-func .hc-left b { font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+  .hc-func .hc-left span { font-size: 11px; color: var(--sub); margin-top: 4px; }
+  .hc-func .hc-right { flex: 1; display: flex; flex-direction: column; }
+  .hc-func .hc-rt, .hc-func .hc-rb { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 14px; cursor: pointer; }
+  .hc-func .hc-rt:hover, .hc-func .hc-rb:hover { background: #fafafa; }
+  .hc-func .hc-rt { border-bottom: 1px solid var(--line); }
+  .hc-func .hc-rt b, .hc-func .hc-rb b { font-size: 12px; font-weight: 600; }
+  .hc-func .hc-rt span, .hc-func .hc-rb span { font-size: 10px; color: var(--sub); display: block; }
+  .hc-lic, .hc-ric { color: var(--accent); display: flex; flex: none; }
   .hc-guide { display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-top: 1px solid var(--line); cursor: pointer; }
   .hc-guide:hover { background: #fafafa; }
   .hg-icon { flex: none; color: var(--accent); }
 
-  .guide-card { margin: 14px 12px 0; background: #fff; border: 1px solid var(--line); display: flex; align-items: center; gap: 12px; padding: 16px 14px; cursor: pointer; }
-  .guide-card:hover { background: #fafafa; }
   .hg-info { flex: 1; }
   .hg-info b { font-size: 13px; font-weight: 700; display: block; }
   .hg-info p { font-size: 11px; color: var(--sub); margin-top: 2px; }
@@ -268,30 +272,22 @@
           </div>
 
           <div class="hc-func">
-            <div class="hf-item" onclick="switchPage('apt')">
-              <span class="hf-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
-              <b>预约挂号</b>
+            <div class="hc-left" onclick="switchPage('apt')">
+              <span class="hc-lic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
+              <b>预约挂号</b><span>专家·普通门诊</span>
             </div>
-            <div class="hf-item">
-              <span class="hf-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
-              <b>智能分诊</b>
-            </div>
-            <div class="hf-item" onclick="switchPage('ot')">
-              <span class="hf-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
-              <b>在线问诊</b>
+            <div class="hc-right">
+              <div class="hc-rt">
+                <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+                <b>智能分诊</b><span>精准推荐</span>
+              </div>
+              <div class="hc-rb" onclick="switchPage('ot')">
+                <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
+                <b>在线问诊</b><span>图文·视频</span>
+              </div>
             </div>
           </div>
         </div>
-          <div class="guide-card">
-            <div class="hg-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-pulse"/></svg>
-            </div>
-            <div class="hg-info">
-              <b>AI智能导诊</b>
-              <p>输入症状 · 智能分诊 · 精准推荐科室</p>
-            </div>
-            <span class="hg-arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></span>
-          </div>
         <div class="sec-ttl">全部服务</div>
         <div class="svc4">
           <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ticket"/></svg></span><span>候诊取号</span></div>
