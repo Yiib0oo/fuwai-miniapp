@@ -49,16 +49,16 @@
   .tab.on { color: var(--ink); }
 
 
-  .brand-hero { margin: 14px 12px 0; position: relative; height: 180px; overflow: hidden;  }
-  .brand-hero .bg { width: 100%; height: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 60%, #7744B8 100%); }
-  .brand-hero .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; color: #fff; }
-  .brand-hero .overlay .logo-badge { font-size: 10px; letter-spacing: 4px; opacity: .85; margin-bottom: 8px; }
-  .brand-hero .overlay b { font-size: 22px; font-weight: 900; letter-spacing: 3px; }
-  .brand-hero .overlay p { font-size: 12px; margin-top: 8px; opacity: .9; letter-spacing: 1px; }
+  .brand-hero { margin: 14px 12px 0; position: relative; height: 160px; overflow: hidden; }
+  .brand-hero .hc-slides { position: relative; height: 100%; }
+  .brand-hero .hc-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .5s; }
+  .brand-hero .hc-slide.active { opacity: 1; }
+  .brand-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .brand-hero .hc-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+  .brand-hero .hc-dots .dot { width: 6px; height: 6px; background: rgba(255,255,255,.5); }
+  .brand-hero .hc-dots .dot.active { background: #fff; }
 
 
-  .brand-hero .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; }
   .home-card { margin: 14px 12px 0; background: #fff; border: 1px solid var(--line); }
   .hc-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
   .hc-patient { display: flex; align-items: center; gap: 12px; }
@@ -246,11 +246,15 @@
 
 
         <div class="brand-hero">
-          <div class="bg"></div>
-          <div class="overlay">
-            <span class="logo-badge">国家心血管病中心</span>
-            <b>中国医学科学院<br>阜外医院</b>
-            <p>心血管疾病国家级诊疗中心 · 世界最大心脏中心之一</p>
+          <div class="hc-slides">
+            <div class="hc-slide active"><img src="banners/青少年.png" alt=""></div>
+            <div class="hc-slide"><img src="banners/睡眠.png" alt=""></div>
+            <div class="hc-slide"><img src="banners/情绪障碍.png" alt=""></div>
+          </div>
+          <div class="hc-dots">
+            <span class="dot active" data-i="0"></span>
+            <span class="dot" data-i="1"></span>
+            <span class="dot" data-i="2"></span>
           </div>
         </div>
         <div class="home-card">
@@ -262,18 +266,6 @@
             </div>
             <span class="hc-qr">就诊码</span>
           </div>
-          <div class="hc-carousel">
-              <div class="hc-slides">
-            <div class="hc-slide active"><img src="banners/青少年.png" alt=""></div>
-            <div class="hc-slide"><img src="banners/睡眠.png" alt=""></div>
-            <div class="hc-slide"><img src="banners/情绪障碍.png" alt=""></div>
-          </div>
-          <div class="hc-dots">
-            <span class="dot active" data-i="0"></span>
-            <span class="dot" data-i="1"></span>
-            <span class="dot" data-i="2"></span>
-          </div>
-        </div>
 
           <div class="hc-func">
             <div class="hf-item" onclick="switchPage('apt')">
