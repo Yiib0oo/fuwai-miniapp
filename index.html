@@ -64,14 +64,23 @@
   .brand-hero .overlay .logo-badge { font-size: 10px; letter-spacing: 4px; opacity: .85; margin-bottom: 8px; }
   .brand-hero .overlay b { font-size: 22px; font-weight: 900; letter-spacing: 3px; }
   .brand-hero .overlay p { font-size: 12px; margin-top: 8px; opacity: .9; letter-spacing: 1px; }
-  .fn3 { display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; padding: 0 12px; margin-top: 14px; }
-  .fn3 .fc { background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 16px 6px 12px; cursor: pointer; border-radius: 4px; }
-  .fn3 .fc .ic { color: var(--red); }
-  .fn3 .fc h4 { font-size: 12px; font-weight: 700; letter-spacing: .5px; margin-top: 10px; }
-  .fn3 .fc p { font-size: 10px; color: var(--sub); margin-top: 3px; }
-  .fn3 .fc-big { grid-row: span 2; padding: 24px 12px 20px; }
-  .fn3 .fc-big h4 { font-size: 15px; }
-  .fn3 .fc-big .ic svg { width: 36px; height: 36px; }
+  .home-card { margin: 14px 12px 0; background: #fff; border: 1px solid var(--line); }
+  .hc-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .hc-patient { display: flex; align-items: center; gap: 12px; }
+  .hc-arr { font-size: 16px; color: var(--faint); cursor: pointer; user-select: none; }
+  .hc-arr:hover { color: var(--ink); }
+  .hc-name { font-size: 15px; font-weight: 700; }
+  .hc-qr { font-size: 12px; color: var(--accent); font-weight: 600; cursor: pointer; }
+  .hc-bot { display: flex; }
+  .hc-bot .hc-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 12px; border-right: 1px solid var(--line); cursor: pointer; }
+  .hc-bot .hc-left b { font-size: 14px; font-weight: 700; margin-top: 8px; letter-spacing: 0.5px; }
+  .hc-bot .hc-left:hover { background: #fafafa; }
+  .hc-bot .hc-right { flex: 1; display: flex; flex-direction: column; }
+  .hc-rt, .hc-rb { flex: 1; display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+  .hc-rt:hover, .hc-rb:hover { background: #fafafa; }
+  .hc-rt { border-bottom: 1px solid var(--line); }
+  .hc-rt b, .hc-rb b { font-size: 13px; font-weight: 600; }
+  .hc-lic, .hc-ric { color: var(--accent); display: flex; flex: none; }
 
   .cta { margin: 16px 12px 0; padding: 16px; background: var(--red); color: #fff; cursor: pointer; display: flex;
     align-items: center; justify-content: space-between; border-radius: 4px; }
@@ -79,12 +88,6 @@
   .cta .tx span { font-size: 11px; opacity: .85; margin-top: 2px; display: block; }
   .cta .ar { font-size: 11px; opacity: .85; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
 
-  .live { margin: 0 12px; background: var(--card); padding: 16px; border-radius: 4px; }
-  .live .lr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-  .live .lr em { font-style: normal; color: var(--red); font-size: 13px; font-weight: 700; padding: 2px 8px; background: #FFF0F2; border-radius: 2px; }
-  .live .lr span { font-size: 11px; color: var(--red); font-weight: 600; cursor: pointer; }
-  .live .li { font-size: 12.5px; font-weight: 700; line-height: 1.4; }
-  .live .ls { font-size: 11px; color: var(--sub); line-height: 1.45; margin-top: 3px; }
 
   .docs { display: flex; gap: 10px; padding: 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .docs::-webkit-scrollbar { display: none; }
@@ -240,38 +243,32 @@
             <p>心血管疾病国家级诊疗中心 · 世界最大心脏中心之一</p>
           </div>
         </div>
-        <div class="fn3">
-          <div class="fc fc-big" onclick="switchPage('apt')">
-            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
-            <h4>预约挂号</h4><p>专家·普通门诊</p>
+        <div class="home-card">
+          <div class="hc-top">
+            <div class="hc-patient">
+              <span class="hc-arr">‹</span>
+              <span class="hc-name">张建国</span>
+              <span class="hc-arr">›</span>
+            </div>
+            <span class="hc-qr">就诊码</span>
           </div>
-          <div class="fc">
-            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
-            <h4>AI导诊</h4><p>智能分诊·精准推荐</p>
-          </div>
-          <div class="fc" onclick="switchPage('ot')">
-            <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
-            <h4>线上诊疗</h4><p>视频·图文问诊</p>
+          <div class="hc-bot">
+            <div class="hc-left" onclick="switchPage('apt')">
+              <span class="hc-lic"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
+              <b>预约挂号</b>
+            </div>
+            <div class="hc-right">
+              <div class="hc-rt">
+                <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+                <b>智能分诊</b>
+              </div>
+              <div class="hc-rb" onclick="switchPage('ot')">
+                <span class="hc-ric"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-video"/></svg></span>
+                <b>在线问诊</b>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="sec-ttl">进行中</div>
-        <div class="live">
-          <div class="lr"><em>候诊</em><span>取号 ›</span></div>
-          <div class="li">今日 09:30　心内科 · 胡盛寿院士团队</div>
-          <div class="ls">已签到 · 请前往门诊楼 2 层 A 区候诊，您前面还有 5 位</div>
-        </div>
-
-        <div class="sec-ttl">推荐医生</div>
-        <div class="docs">
-          <div class="doc"><div class="av"><div class="dinit">胡</div></div><b>胡盛寿</b><span>院士·主任医师</span><em>可约</em></div>
-          <div class="doc"><div class="av"><div class="dinit">郑</div></div><b>郑哲</b><span>主任医师</span><em>可约</em></div>
-          <div class="doc"><div class="av"><div class="dinit">潘</div></div><b>潘湘斌</b><span>主任医师</span><em>可约</em></div>
-          <div class="doc"><div class="av"><div class="dinit">王</div></div><b>王水云</b><span>副主任医师</span><em>可约</em></div>
-          <div class="doc"><div class="av"><div class="dinit">李</div></div><b>李守军</b><span>主任医师</span><em>可约</em></div>
-          <div class="doc"><div class="av"><div class="dinit">杨</div></div><b>杨跃进</b><span>主任医师</span><em>可约</em></div>
-        </div>
-
         <div class="sec-ttl">全部服务</div>
         <div class="svc4">
           <div class="s"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ticket"/></svg></span><span>候诊取号</span></div>
