@@ -57,11 +57,14 @@
   .brand-hero .overlay b { font-size: 22px; font-weight: 900; letter-spacing: 3px; }
   .brand-hero .overlay p { font-size: 12px; margin-top: 8px; opacity: .9; letter-spacing: 1px; }
 
-  .fn3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 0 2px; padding: 0 12px; margin-top: 14px; }
+  .fn3 { display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; padding: 0 12px; margin-top: 14px; }
   .fn3 .fc { background: var(--card); display: flex; flex-direction: column; align-items: center; padding: 16px 6px 12px; cursor: pointer; border-radius: 4px; }
   .fn3 .fc .ic { color: var(--red); }
   .fn3 .fc h4 { font-size: 12px; font-weight: 700; letter-spacing: .5px; margin-top: 10px; }
   .fn3 .fc p { font-size: 10px; color: var(--sub); margin-top: 3px; }
+  .fn3 .fc-big { grid-row: span 2; padding: 24px 12px 20px; }
+  .fn3 .fc-big h4 { font-size: 15px; }
+  .fn3 .fc-big .ic svg { width: 36px; height: 36px; }
 
   .cta { margin: 16px 12px 0; padding: 16px; background: var(--red); color: #fff; cursor: pointer; display: flex;
     align-items: center; justify-content: space-between; border-radius: 4px; }
@@ -222,7 +225,7 @@
 
 
         <div class="fn3">
-          <div class="fc" onclick="switchPage('apt')">
+          <div class="fc fc-big" onclick="switchPage('apt')">
             <span class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-cal"/></svg></span>
             <h4>预约挂号</h4><p>专家·普通门诊</p>
           </div>
